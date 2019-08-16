@@ -1,0 +1,460 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Penguin.Images</name>
+    </assembly>
+    <members>
+        <member name="M:Penguin.Images.Extensions.ImageExtensions.GetMimeType``1(``0)">
+            <summary>
+            Returns the MimeType associated with the image
+            </summary>
+            <typeparam name="T">Any Image type</typeparam>
+            <param name="image">The image to get the mime type for</param>
+            <returns>The image mime type</returns>
+        </member>
+        <member name="M:Penguin.Images.Extensions.ImageExtensions.GetFilenameExtension``1(``0)">
+            <summary>
+            Returns the file extension for the image format (from the encoder)
+            </summary>
+            <typeparam name="T">Any image type</typeparam>
+            <param name="image">Any image</param>
+            <returns>the file extension (including .)</returns>
+        </member>
+        <member name="M:Penguin.Images.Extensions.ImageExtensions.Convert``1(``0,System.Drawing.Imaging.ImageFormat)">
+            <summary>
+            Converts an image to the requested format in-memory and returns the bytes
+            </summary>
+            <typeparam name="T">Any image kind</typeparam>
+            <param name="source">The source to convert</param>
+            <param name="format">The target format</param>
+            <returns>The converted bytes</returns>
+        </member>
+        <member name="M:Penguin.Images.Extensions.ImageExtensions.GenerateThumbnail``1(``0,System.Drawing.Size)">
+            <summary>
+            Just calls resize
+            </summary>
+            <param name="img">The image to resize</param>
+            <param name="thumbSize">The size of the image to return</param>
+            <returns>A thumbnail for the image</returns>
+        </member>
+        <member name="M:Penguin.Images.Extensions.ImageExtensions.PadImage``1(``0)">
+            <summary>
+            Pads an image out so that it has a 1:1 aspect ratio
+            </summary>
+            <param name="originalImage">The image to pad</param>
+            <returns>The padded image</returns>
+        </member>
+        <member name="M:Penguin.Images.Extensions.ImageExtensions.Resize``1(``0,System.Drawing.Size)">
+            <summary>
+            Resizes an image to the given dimensions
+            </summary>
+            <param name="original">The original image</param>
+            <param name="size">A size for the new image</param>
+            <returns>A resized image</returns>
+        </member>
+        <member name="M:Penguin.Images.Extensions.ImageExtensions.ScaleImage``1(``0,System.Int32,System.Int32)">
+            <summary>
+            Scales an image to fit within the given dimensions while preserving aspect ratio
+            </summary>
+            <param name="img">The source image to scale</param>
+            <param name="maxWidth">The maximum width the new image should have</param>
+            <param name="maxHeight">The maximum height the new image should have</param>
+            <returns>A new image that fits within the given dimensions</returns>
+        </member>
+        <member name="M:Penguin.Images.Extensions.ImageExtensions.ToByteArray``1(``0)">
+            <summary>
+            Converts an image to a byte array for persistence or transfer
+            </summary>
+            <param name="img">the source image to convert</param>
+            <returns>A byte array representing the data contained within the original image</returns>
+        </member>
+        <member name="M:Penguin.Images.Extensions.ImageExtensions.RoundCorners``1(``0,System.Int32,System.Drawing.Color)">
+            <summary>
+            Rounds an image corners
+            </summary>
+            <param name="StartImage">The image to round</param>
+            <param name="CornerRadius">The radius of the corners</param>
+            <param name="BackgroundColor">The color to apply behind the rounded corners</param>
+            <returns>The image with rounded corners</returns>
+        </member>
+        <member name="T:Penguin.Images.Objects.EXIFextractor">
+            <summary>
+            EXIFextractor Class.
+            Code found elsewhere. Not well commented. Improvements needed for documentation
+            </summary>
+        </member>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.#ctor(System.Drawing.Bitmap@,System.String)">
+             <summary>
+            
+             </summary>
+             <param name="bmp"></param>
+             <param name="sp"></param>
+        </member>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.#ctor(System.Drawing.Bitmap@,System.String,System.String)">
+            <summary>
+            Constructs an instance of this class with the provided data
+            </summary>
+            <param name="bmp">a bitmap to use as the source</param>
+            <param name="sp"></param>
+            <param name="msp"></param>
+        </member>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Constructs an instance of this class with the provided data
+            </summary>
+            <param name="file">The file path to use as a source</param>
+            <param name="sp"></param>
+            <param name="msp"></param>
+        </member>
+        <member name="P:Penguin.Images.Objects.EXIFextractor.Item(System.String)">
+             <summary>
+             Get the individual property value by supplying property name
+             These are the valid property names :
+            
+             "Exif IFD"
+             "Gps IFD"
+             "New Subfile Type"
+             "Subfile Type"
+             "Image Width"
+             "Image Height"
+             "Bits Per Sample"
+             "Compression"
+             "Photometric Interp"
+             "Thresh Holding"
+             "Cell Width"
+             "Cell Height"
+             "Fill Order"
+             "Document Name"
+             "Image Description"
+             "Equip Make"
+             "Equip Model"
+             "Strip Offsets"
+             "Orientation"
+             "Samples PerPixel"
+             "Rows Per Strip"
+             "Strip Bytes Count"
+             "Min Sample Value"
+             "Max Sample Value"
+             "X Resolution"
+             "Y Resolution"
+             "Planar Config"
+             "Page Name"
+             "X Position"
+             "Y Position"
+             "Free Offset"
+             "Free Byte Counts"
+             "Gray Response Unit"
+             "Gray Response Curve"
+             "T4 Option"
+             "T6 Option"
+             "Resolution Unit"
+             "Page Number"
+             "Transfer Funcition"
+             "Software Used"
+             "Date Time"
+             "Artist"
+             "Host Computer"
+             "Predictor"
+             "White Point"
+             "Primary Chromaticities"
+             "ColorMap"
+             "Halftone Hints"
+             "Tile Width"
+             "Tile Length"
+             "Tile Offset"
+             "Tile ByteCounts"
+             "InkSet"
+             "Ink Names"
+             "Number Of Inks"
+             "Dot Range"
+             "Target Printer"
+             "Extra Samples"
+             "Sample Format"
+             "S Min Sample Value"
+             "S Max Sample Value"
+             "Transfer Range"
+             "JPEG Proc"
+             "JPEG InterFormat"
+             "JPEG InterLength"
+             "JPEG RestartInterval"
+             "JPEG LosslessPredictors"
+             "JPEG PointTransforms"
+             "JPEG QTables"
+             "JPEG DCTables"
+             "JPEG ACTables"
+             "YCbCr Coefficients"
+             "YCbCr Subsampling"
+             "YCbCr Positioning"
+             "REF Black White"
+             "ICC Profile"
+             "Gamma"
+             "ICC Profile Descriptor"
+             "SRGB RenderingIntent"
+             "Image Title"
+             "Copyright"
+             "Resolution X Unit"
+             "Resolution Y Unit"
+             "Resolution X LengthUnit"
+             "Resolution Y LengthUnit"
+             "Print Flags"
+             "Print Flags Version"
+             "Print Flags Crop"
+             "Print Flags Bleed Width"
+             "Print Flags Bleed Width Scale"
+             "Halftone LPI"
+             "Halftone LPIUnit"
+             "Halftone Degree"
+             "Halftone Shape"
+             "Halftone Misc"
+             "Halftone Screen"
+             "JPEG Quality"
+             "Grid Size"
+             "Thumbnail Format"
+             "Thumbnail Width"
+             "Thumbnail Height"
+             "Thumbnail ColorDepth"
+             "Thumbnail Planes"
+             "Thumbnail RawBytes"
+             "Thumbnail Size"
+             "Thumbnail CompressedSize"
+             "Color Transfer Function"
+             "Thumbnail Data"
+             "Thumbnail ImageWidth"
+             "Thumbnail ImageHeight"
+             "Thumbnail BitsPerSample"
+             "Thumbnail Compression"
+             "Thumbnail PhotometricInterp"
+             "Thumbnail ImageDescription"
+             "Thumbnail EquipMake"
+             "Thumbnail EquipModel"
+             "Thumbnail StripOffsets"
+             "Thumbnail Orientation"
+             "Thumbnail SamplesPerPixel"
+             "Thumbnail RowsPerStrip"
+             "Thumbnail StripBytesCount"
+             "Thumbnail ResolutionX"
+             "Thumbnail ResolutionY"
+             "Thumbnail PlanarConfig"
+             "Thumbnail ResolutionUnit"
+             "Thumbnail TransferFunction"
+             "Thumbnail SoftwareUsed"
+             "Thumbnail DateTime"
+             "Thumbnail Artist"
+             "Thumbnail WhitePoint"
+             "Thumbnail PrimaryChromaticities"
+             "Thumbnail YCbCrCoefficients"
+             "Thumbnail YCbCrSubsampling"
+             "Thumbnail YCbCrPositioning"
+             "Thumbnail RefBlackWhite"
+             "Thumbnail CopyRight"
+             "Luminance Table"
+             "Chrominance Table"
+             "Frame Delay"
+             "Loop Count"
+             "Pixel Unit"
+             "Pixel PerUnit X"
+             "Pixel PerUnit Y"
+             "Palette Histogram"
+             "Exposure Time"
+             "F-Number"
+             "Exposure Prog"
+             "Spectral Sense"
+             "ISO Speed"
+             "OECF"
+             "Ver"
+             "DTOrig"
+             "DTDigitized"
+             "CompConfig"
+             "CompBPP"
+             "Shutter Speed"
+             "Aperture"
+             "Brightness"
+             "Exposure Bias"
+             "MaxAperture"
+             "SubjectDist"
+             "Metering Mode"
+             "LightSource"
+             "Flash"
+             "FocalLength"
+             "Maker Note"
+             "User Comment"
+             "DTSubsec"
+             "DTOrigSS"
+             "DTDigSS"
+             "FPXVer"
+             "ColorSpace"
+             "PixXDim"
+             "PixYDim"
+             "RelatedWav"
+             "Interop"
+             "FlashEnergy"
+             "SpatialFR"
+             "FocalXRes"
+             "FocalYRes"
+             "FocalResUnit"
+             "Subject Loc"
+             "Exposure Index"
+             "Sensing Method"
+             "FileSource"
+             "SceneType"
+             "CfaPattern"
+             "Gps Ver"
+             "Gps LatitudeRef"
+             "Gps Latitude"
+             "Gps LongitudeRef"
+             "Gps Longitude"
+             "Gps AltitudeRef"
+             "Gps Altitude"
+             "Gps GpsTime"
+             "Gps GpsSatellites"
+             "Gps GpsStatus"
+             "Gps GpsMeasureMode"
+             "Gps GpsDop"
+             "Gps SpeedRef"
+             "Gps Speed"
+             "Gps TrackRef"
+             "Gps Track"
+             "Gps ImgDirRef"
+             "Gps ImgDir"
+             "Gps MapDatum"
+             "Gps DestLatRef"
+             "Gps DestLat"
+             "Gps DestLongRef"
+             "Gps DestLong"
+             "Gps DestBearRef"
+             "Gps DestBear"
+             "Gps DestDistRef"
+             "Gps DestDist"
+             </summary>
+        </member>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.GetExifProperties(System.String)">
+            <summary>
+            Gets a list of EXIF properties for the image found at the provided path
+            </summary>
+            <param name="fileName">The file to check</param>
+            <returns>An array of EXIF properties found on the image</returns>
+        </member>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.GetEnumerator">
+            <summary>
+            Returns an enumerator for the properties extracted
+            </summary>
+            <returns>an enumerator for the properties extracted</returns>
+        </member>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.setTag(System.Int32,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <param name="data"></param>
+        </member>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.setTag(System.Int32,System.Int32,System.Int16,System.Byte[])">
+             <summary>
+            
+             </summary>
+             <param name="id"></param>
+             <param name="len"></param>
+             <param name="type"></param>
+             <param name="data"></param>
+        </member>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.ToString">
+             <summary>
+            
+             </summary>
+             <returns></returns>;
+        </member>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.CreatePropertyItem(System.Int16,System.Int32,System.Int32,System.Byte[])">
+             <summary>
+            
+             </summary>
+             <param name="type"></param>
+             <param name="tag"></param>
+             <param name="len"></param>
+             <param name="value"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.buildDB(System.Drawing.Imaging.PropertyItem[])">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.convertToInt16(System.Byte[])">
+             <summary>
+            
+             </summary>
+             <param name="arr"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.convertToInt16U(System.Byte[])">
+             <summary>
+            
+             </summary>
+             <param name="arr"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.convertToInt32(System.Byte[])">
+             <summary>
+            
+             </summary>
+             <param name="arr"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.convertToInt32U(System.Byte[])">
+             <summary>
+            
+             </summary>
+             <param name="arr"></param>
+             <returns></returns>
+        </member>
+        <member name="T:Penguin.Images.Objects.translation">
+            <summary>
+            Summary description for translation.
+            </summary>
+        </member>
+        <member name="M:Penguin.Images.Objects.translation.#ctor">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="T:Penguin.Images.Objects.Rational">
+            <summary>
+            private class
+            </summary>
+        </member>
+        <member name="T:Penguin.Images.PenguinImage">
+            <summary>
+            Wraps an image and allows for some basic operations
+            </summary>
+        </member>
+        <member name="M:Penguin.Images.PenguinImage.#ctor(System.Byte[])">
+            <summary>
+            Constructs a new instance from a byte array
+            </summary>
+            <param name="SourceData">The file data</param>
+        </member>
+        <member name="M:Penguin.Images.PenguinImage.#ctor(System.Drawing.Image)">
+            <summary>
+            Constructs a new instance from a GDI image
+            </summary>
+            <param name="image">The image source</param>
+        </member>
+        <member name="P:Penguin.Images.PenguinImage.Bytes">
+            <summary>
+            Retrieves the altered underlying bytes
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Penguin.Images.PenguinImage.Round(System.Single)" -->
+        <member name="T:Penguin.Images.PenguinImage.ResizeMode">
+            <summary>
+            The mode to use on the image to ensure it fits within the given dimensions
+            </summary>
+        </member>
+        <member name="M:Penguin.Images.PenguinImage.Resize(System.Int32,System.Int32,Penguin.Images.PenguinImage.ResizeMode)">
+            <summary>
+            Resizes the image using the given mode
+            </summary>
+            <param name="Width">The new width</param>
+            <param name="Height">The new height</param>
+            <param name="Mode">The mode to use</param>
+        </member>
+    </members>
+</doc>
