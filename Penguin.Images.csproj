@@ -5,33 +5,36 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
-    <PackageProjectUrl>http://www.penguinms.com/Nuget</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/penguincms/Penguin.Images</PackageProjectUrl>
 	<PackageIconUrl>http://www.penguinms.com/client/images/pg.png</PackageIconUrl>
     <Version>2.0.1</Version>
+	<IncludeSymbols>true</IncludeSymbols>    
+<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
 	<Description>Image extension methods. Methods include GenerateThumbnail, PadImage, Resize, ScaleImage, ToByteArray as well as a method for extracting EXIF data</Description>
   </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningsAsErrors>NU1605, CS1591</WarningsAsErrors>
-    <DocumentationFile>C:\SVN\Framework\Nuget\Penguin.Images\Penguin.Images.xml</DocumentationFile>
+    <DocumentationFile>Penguin.Images.xml</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 	<DebugType>full</DebugType>
       <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-      <DocumentationFile>C:\SVN\Framework\Nuget\Penguin.Images\Penguin.Images.xml</DocumentationFile>
+      <DocumentationFile>Penguin.Images.xml</DocumentationFile>
     </PropertyGroup>
   
   <ItemGroup>
-    <None Include="..\License.txt">
+    <None Include="License.txt">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.14.0.1" />
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.14.3" />
     <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
   </ItemGroup>
 
