@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>Penguin.Images.Local</name>
+        <name>Penguin.Images</name>
     </assembly>
     <members>
         <member name="M:Penguin.Images.Extensions.ImageExtensions.GetMimeType``1(``0)">
