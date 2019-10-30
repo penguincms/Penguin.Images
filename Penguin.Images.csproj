@@ -4,6 +4,8 @@
     <PackageProjectUrl>https://github.com/penguincms/Penguin.Images</PackageProjectUrl>
     <Version>2.0.1</Version>
     <Description>Image extension methods. Methods include GenerateThumbnail, PadImage, Resize, ScaleImage, ToByteArray as well as a method for extracting EXIF data</Description>
+    <AssemblyName>Penguin.Images</AssemblyName>
+    <RootNamespace>Penguin.Images</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.14.3" />
