@@ -6,6 +6,7 @@
     <Description>Image extension methods. Methods include GenerateThumbnail, PadImage, Resize, ScaleImage, ToByteArray as well as a method for extracting EXIF data</Description>
     <AssemblyName>Penguin.Images</AssemblyName>
     <RootNamespace>Penguin.Images</RootNamespace>
+    <DocumentationFile>Penguin.Images.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.14.3" />
