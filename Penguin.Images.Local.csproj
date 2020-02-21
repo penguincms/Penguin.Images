@@ -8,7 +8,7 @@
     <RootNamespace>Penguin.Images</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.14.3" />
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.15.1" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
   <Import Project="Penguin.Projects.Shared\Penguin.Projects.Shared.csproj" />
