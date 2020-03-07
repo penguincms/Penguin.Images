@@ -8,6 +8,7 @@ using System.Linq;
 namespace Penguin.Images.Extensions
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
     public static class ImageExtensions
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     {
@@ -33,6 +34,10 @@ namespace Penguin.Images.Extensions
         /// <returns>the file extension (including .)</returns>
         public static string GetFilenameExtension<T>(this T image) where T : Image
         {
+            if (image is null)
+            {
+                throw new ArgumentNullException(nameof(image));
+            }
 
             try
             {
@@ -57,11 +62,20 @@ namespace Penguin.Images.Extensions
         /// <param name="source">The source to convert</param>
         /// <param name="format">The target format</param>
         /// <returns>The converted bytes</returns>
-        public static byte[] Convert<T>(this T source, System.Drawing.Imaging.ImageFormat format) where T : Image
+        public static byte[] Convert<T>(this T source, ImageFormat format = null) where T : Image
         {
-            MemoryStream ms = new MemoryStream();
-            source.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
-            return ms.ToArray();
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            format = format ?? ImageFormat.Gif;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                source.Save(ms, format);
+                return ms.ToArray();
+            }
         }
 
         /// <summary>
@@ -70,9 +84,11 @@ namespace Penguin.Images.Extensions
         /// <param name="img">The image to resize</param>
         /// <param name="thumbSize">The size of the image to return</param>
         /// <returns>A thumbnail for the image</returns>
-        public static Bitmap GenerateThumbnail<T>(this T img, Size thumbSize) where T : Image =>
+        public static Bitmap GenerateThumbnail<T>(this T img, Size thumbSize) where T : Image
+        {
             // return img.PadImage().GetThumbnailImage(thumbSize.Width, thumbSize.Height, () => false, IntPtr.Zero);
-            img.Resize(thumbSize);
+            return img.Resize(thumbSize);
+        }
 
         /// <summary>
         /// Pads an image out so that it has a 1:1 aspect ratio
@@ -81,6 +97,11 @@ namespace Penguin.Images.Extensions
         /// <returns>The padded image</returns>
         public static Bitmap PadImage<T>(this T originalImage) where T : Image
         {
+            if (originalImage is null)
+            {
+                throw new ArgumentNullException(nameof(originalImage));
+            }
+
             int largestDimension = Math.Max(originalImage.Height, originalImage.Width);
             Size squareSize = new Size(largestDimension, largestDimension);
             Bitmap squareImage = new Bitmap(squareSize.Width, squareSize.Height);
@@ -112,7 +133,12 @@ namespace Penguin.Images.Extensions
         /// <returns>A resized image</returns>
         public static Bitmap Resize<T>(this T original, Size size) where T : Image
         {
-            Bitmap resized = new Bitmap(original, size.Width, original.Height * size.Width / original.Width );         
+            if (original is null)
+            {
+                throw new ArgumentNullException(nameof(original));
+            }
+
+            Bitmap resized = new Bitmap(original, size.Width, original.Height * size.Width / original.Width);
 
             if (resized.Height > size.Height)
             {
@@ -132,6 +158,11 @@ namespace Penguin.Images.Extensions
         /// <returns>A new image that fits within the given dimensions</returns>
         public static Bitmap ScaleImage<T>(this T img, int maxWidth, int maxHeight = int.MaxValue) where T : Image
         {
+            if (img is null)
+            {
+                throw new ArgumentNullException(nameof(img));
+            }
+
             double ratioX = (double)maxWidth / img.Width;
             double ratioY = (double)maxHeight / img.Height;
             double ratio = Math.Min(ratioX, ratioY);
@@ -157,6 +188,11 @@ namespace Penguin.Images.Extensions
         /// <returns>A byte array representing the data contained within the original image</returns>
         public static byte[] ToByteArray<T>(this T img) where T : Image
         {
+            if (img is null)
+            {
+                throw new ArgumentNullException(nameof(img));
+            }
+
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 img.Save(memoryStream, ImageFormat.Jpeg);
@@ -173,6 +209,10 @@ namespace Penguin.Images.Extensions
         /// <returns>The image with rounded corners</returns>
         public static Bitmap RoundCorners<T>(this T StartImage, int CornerRadius, Color BackgroundColor) where T : Image
         {
+            if (StartImage is null)
+            {
+                throw new ArgumentNullException(nameof(StartImage));
+            }
 
             CornerRadius *= 2;
             Bitmap RoundedImage = new Bitmap(StartImage.Width, StartImage.Height);

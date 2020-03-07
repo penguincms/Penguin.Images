@@ -22,36 +22,19 @@ namespace Penguin.Images.Objects
 
         #region Constructors
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="bmp"></param>
-        /// <param name="sp"></param>
-        public EXIFextractor(ref System.Drawing.Bitmap bmp, string sp)
-        {
-            this.properties = new Hashtable();
-            //
-            this.bmp = bmp;
-            this.sp = sp;
-            //
-            this.myHash = new translation();
-            this.buildDB(this.bmp.PropertyItems);
-        }
 
         /// <summary>
         /// Constructs an instance of this class with the provided data
         /// </summary>
         /// <param name="bmp">a bitmap to use as the source</param>
         /// <param name="sp"></param>
-        /// <param name="msp"></param>
-        public EXIFextractor(ref System.Drawing.Bitmap bmp, string sp, string msp)
+        public EXIFextractor(ref System.Drawing.Bitmap bmp, string sp)
         {
             this.properties = new Hashtable();
             this.sp = sp;
-            this.msp = msp;
-            this.bmp = bmp;
-            this.myHash = new translation();
-            this.buildDB(bmp.PropertyItems);
+            this.bmp = bmp ?? throw new ArgumentNullException(nameof(bmp));
+            this.myHash = new Translation();
+            this.BuildDB(bmp.PropertyItems);
         }
 
         /// <summary>
@@ -60,15 +43,14 @@ namespace Penguin.Images.Objects
         /// <param name="file">The file path to use as a source</param>
         /// <param name="sp"></param>
         /// <param name="msp"></param>
-        public EXIFextractor(string file, string sp, string msp)
+        public EXIFextractor(string file, string sp)
         {
             this.properties = new Hashtable();
             this.sp = sp;
-            this.msp = msp;
 
-            this.myHash = new translation();
+            this.myHash = new Translation();
             //
-            this.buildDB(GetExifProperties(file));
+            this.BuildDB(GetExifProperties(file));
         }
 
         #endregion Constructors
@@ -318,19 +300,26 @@ namespace Penguin.Images.Objects
         /// Returns an enumerator for the properties extracted
         /// </summary>
         /// <returns>an enumerator for the properties extracted</returns>
-        public IEnumerator GetEnumerator() =>
-                            // TODO:  Add EXIFextractor.GetEnumerator implementation
-                            (new EXIFextractorEnumerator(this.properties));
+        public IEnumerator GetEnumerator()
+        {
+            // TODO:  Add EXIFextractor.GetEnumerator implementation
+            return (new EXIFextractorEnumerator(this.properties));
+        }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="id"></param>
         /// <param name="data"></param>
-        public void setTag(int id, string data)
+        public void SetTag(int id, string data)
         {
+            if (data is null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
             Encoding ascii = Encoding.ASCII;
-            this.setTag(id, data.Length, 0x2, ascii.GetBytes(data));
+            this.SetTag(id, data.Length, 0x2, ascii.GetBytes(data));
         }
 
         /// <summary>
@@ -340,39 +329,41 @@ namespace Penguin.Images.Objects
         /// <param name="len"></param>
         /// <param name="type"></param>
         /// <param name="data"></param>
-        public void setTag(int id, int len, short type, byte[] data)
+        public void SetTag(int id, int len, short type, byte[] data)
         {
             PropertyItem p = CreatePropertyItem(type, id, len, data);
             this.bmp.SetPropertyItem(p);
-            this.buildDB(this.bmp.PropertyItems);
+            this.BuildDB(this.bmp.PropertyItems);
         }
 
         /// <summary>
         ///
         /// </summary>
         /// <returns></returns>;
-        public override string ToString() => this.data;
+        public override string ToString()
+        {
+            return this.data;
+        }
 
         #endregion Methods
 
         #region Fields
 
         //
-        private System.Drawing.Bitmap bmp;
+        private readonly System.Drawing.Bitmap bmp;
 
         //
         private string data;
 
-        private string msp = "";
 
         //
-        private translation myHash;
+        private readonly Translation myHash;
 
         //
-        private Hashtable properties;
+        private readonly Hashtable properties;
 
         //
-        private string sp;
+        private readonly string sp;
 
         #endregion Fields
 
@@ -408,7 +399,7 @@ namespace Penguin.Images.Objects
         /// <summary>
         ///
         /// </summary>
-        private void buildDB(System.Drawing.Imaging.PropertyItem[] parr)
+        private void BuildDB(System.Drawing.Imaging.PropertyItem[] parr)
         {
             this.properties.Clear();
             //
@@ -446,12 +437,12 @@ namespace Penguin.Images.Objects
                     switch (p.Id)
                     {
                         case 0x8827: // ISO
-                            v = "ISO-" + this.convertToInt16U(p.Value).ToString();
+                            v = "ISO-" + ConvertToInt16U(p.Value).ToString();
                             break;
 
                         case 0xA217: // sensing method
                             {
-                                switch (this.convertToInt16U(p.Value))
+                                switch (ConvertToInt16U(p.Value))
                                 {
                                     case 1:
                                         v = "Not defined";
@@ -489,7 +480,7 @@ namespace Penguin.Images.Objects
                             break;
 
                         case 0x8822: // aperture
-                            switch (this.convertToInt16U(p.Value))
+                            switch (ConvertToInt16U(p.Value))
                             {
                                 case 0:
                                     v = "Not defined";
@@ -534,7 +525,7 @@ namespace Penguin.Images.Objects
                             break;
 
                         case 0x9207: // metering mode
-                            switch (this.convertToInt16U(p.Value))
+                            switch (ConvertToInt16U(p.Value))
                             {
                                 case 0:
                                     v = "unknown";
@@ -576,7 +567,7 @@ namespace Penguin.Images.Objects
 
                         case 0x9208: // light source
                             {
-                                switch (this.convertToInt16U(p.Value))
+                                switch (ConvertToInt16U(p.Value))
                                 {
                                     case 0:
                                         v = "unknown";
@@ -631,7 +622,7 @@ namespace Penguin.Images.Objects
 
                         case 0x9209:
                             {
-                                switch (this.convertToInt16U(p.Value))
+                                switch (ConvertToInt16U(p.Value))
                                 {
                                     case 0:
                                         v = "Flash did not fire";
@@ -657,7 +648,7 @@ namespace Penguin.Images.Objects
                             break;
 
                         default:
-                            v = this.convertToInt16U(p.Value).ToString();
+                            v = ConvertToInt16U(p.Value).ToString();
                             break;
                     }
                 }
@@ -665,7 +656,7 @@ namespace Penguin.Images.Objects
                 else if (p.Type == 0x4)
                 {
                     // orientation // lookup table
-                    v = this.convertToInt32U(p.Value).ToString();
+                    v = ConvertToInt32U(p.Value).ToString();
                 }
                 //5 = RATIONAL Two LONGs. The first LONG is the numerator and the second LONG expresses the//denominator.,
                 else if (p.Type == 0x5)
@@ -675,8 +666,8 @@ namespace Penguin.Images.Objects
                     byte[] d = new byte[p.Len / 2];
                     Array.Copy(p.Value, 0, n, 0, p.Len / 2);
                     Array.Copy(p.Value, p.Len / 2, d, 0, p.Len / 2);
-                    uint a = this.convertToInt32U(n);
-                    uint b = this.convertToInt32U(d);
+                    uint a = ConvertToInt32U(n);
+                    uint b = ConvertToInt32U(d);
                     Rational r = new Rational(a, b);
                     //
                     //convert here
@@ -741,7 +732,7 @@ namespace Penguin.Images.Objects
                 //9 = SLONG A 32-bit (4 -byte) signed integer (2's complement notation),
                 else if (p.Type == 0x9)
                 {
-                    v = this.convertToInt32(p.Value).ToString();
+                    v = this.ConvertToInt32(p.Value).ToString();
                 }
                 //10 = SRATIONAL Two SLONGs. The first SLONG is the numerator and the second SLONG is the
                 //denominator.
@@ -752,8 +743,8 @@ namespace Penguin.Images.Objects
                     byte[] d = new byte[p.Len / 2];
                     Array.Copy(p.Value, 0, n, 0, p.Len / 2);
                     Array.Copy(p.Value, p.Len / 2, d, 0, p.Len / 2);
-                    int a = this.convertToInt32(n);
-                    int b = this.convertToInt32(d);
+                    int a = this.ConvertToInt32(n);
+                    int b = this.ConvertToInt32(d);
                     Rational r = new Rational(a, b);
                     //
                     // convert here
@@ -789,24 +780,7 @@ namespace Penguin.Images.Objects
         /// </summary>
         /// <param name="arr"></param>
         /// <returns></returns>
-        private int convertToInt16(byte[] arr)
-        {
-            if (arr.Length != 2)
-            {
-                return 0;
-            }
-            else
-            {
-                return arr[1] << 8 | arr[0];
-            }
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="arr"></param>
-        /// <returns></returns>
-        private uint convertToInt16U(byte[] arr)
+        private static uint ConvertToInt16U(byte[] arr)
         {
             if (arr.Length != 2)
             {
@@ -823,7 +797,7 @@ namespace Penguin.Images.Objects
         /// </summary>
         /// <param name="arr"></param>
         /// <returns></returns>
-        private int convertToInt32(byte[] arr)
+        private int ConvertToInt32(byte[] arr)
         {
             if (arr.Length != 4)
             {
@@ -840,7 +814,7 @@ namespace Penguin.Images.Objects
         /// </summary>
         /// <param name="arr"></param>
         /// <returns></returns>
-        private uint convertToInt32U(byte[] arr)
+        private static uint ConvertToInt32U(byte[] arr)
         {
             if (arr.Length != 4)
             {
@@ -856,14 +830,14 @@ namespace Penguin.Images.Objects
     /// <summary>
     /// Summary description for translation.
     /// </summary>
-    public class translation : Hashtable
+    public class Translation : Hashtable
     {
         #region Constructors
 
         /// <summary>
         ///
         /// </summary>
-        public translation()
+        public Translation()
         {
             this.Add(0x8769, "Exif IFD");
             this.Add(0x8825, "Gps IFD");
@@ -1092,7 +1066,7 @@ namespace Penguin.Images.Objects
     {
         #region Properties
 
-        public object Current => (Key: this.index.Key, Value: this.index.Value);
+        public object Current => (this.index.Key, this.index.Value);
 
         #endregion Properties
 
@@ -1110,7 +1084,10 @@ namespace Penguin.Images.Objects
             }
         }
 
-        public void Reset() => this.index = null;
+        public void Reset()
+        {
+            this.index = null;
+        }
 
         #endregion Methods
 
@@ -1118,7 +1095,6 @@ namespace Penguin.Images.Objects
 
         internal EXIFextractorEnumerator(Hashtable exif)
         {
-            this.exifTable = exif;
             this.Reset();
             this.index = exif.GetEnumerator();
         }
@@ -1126,8 +1102,6 @@ namespace Penguin.Images.Objects
         #endregion Constructors
 
         #region Fields
-
-        private Hashtable exifTable;
         private IDictionaryEnumerator index;
 
         #endregion Fields
@@ -1144,7 +1118,7 @@ namespace Penguin.Images.Objects
         {
             this.n = n;
             this.d = d;
-            this.simplify(ref this.n, ref this.d);
+            this.Simplify(ref this.n, ref this.d);
         }
 
         public Rational(uint n, uint d)
@@ -1152,7 +1126,7 @@ namespace Penguin.Images.Objects
             this.n = Convert.ToInt32(n);
             this.d = Convert.ToInt32(d);
 
-            this.simplify(ref this.n, ref this.d);
+            this.Simplify(ref this.n, ref this.d);
         }
 
         public Rational()
@@ -1188,12 +1162,12 @@ namespace Penguin.Images.Objects
 
         #region Fields
 
-        private int d;
-        private int n;
+        private readonly int d;
+        private readonly int n;
 
         #endregion Fields
 
-        private int euclid(int a, int b)
+        private int Euclid(int a, int b)
         {
             if (b == 0)
             {
@@ -1201,18 +1175,18 @@ namespace Penguin.Images.Objects
             }
             else
             {
-                return this.euclid(b, a % b);
+                return this.Euclid(b, a % b);
             }
         }
 
-        private void simplify(ref int a, ref int b)
+        private void Simplify(ref int a, ref int b)
         {
             if (a == 0 || b == 0)
             {
                 return;
             }
 
-            int gcd = this.euclid(a, b);
+            int gcd = this.Euclid(a, b);
             a /= gcd;
             b /= gcd;
         }
