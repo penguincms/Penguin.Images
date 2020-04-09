@@ -84,21 +84,13 @@
             </summary>
         </member>
         <member name="M:Penguin.Images.Objects.EXIFextractor.#ctor(System.Drawing.Bitmap@,System.String)">
-             <summary>
-            
-             </summary>
-             <param name="bmp"></param>
-             <param name="sp"></param>
-        </member>
-        <member name="M:Penguin.Images.Objects.EXIFextractor.#ctor(System.Drawing.Bitmap@,System.String,System.String)">
             <summary>
             Constructs an instance of this class with the provided data
             </summary>
             <param name="bmp">a bitmap to use as the source</param>
             <param name="sp"></param>
-            <param name="msp"></param>
         </member>
-        <member name="M:Penguin.Images.Objects.EXIFextractor.#ctor(System.String,System.String,System.String)">
+        <member name="M:Penguin.Images.Objects.EXIFextractor.#ctor(System.String,System.String)">
             <summary>
             Constructs an instance of this class with the provided data
             </summary>
@@ -340,14 +332,14 @@
             </summary>
             <returns>an enumerator for the properties extracted</returns>
         </member>
-        <member name="M:Penguin.Images.Objects.EXIFextractor.setTag(System.Int32,System.String)">
-            <summary>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.SetTag(System.Int32,System.String)">
+             <summary>
             
-            </summary>
-            <param name="id"></param>
-            <param name="data"></param>
+             </summary>
+             <param name="id"></param>
+             <param name="data"></param>
         </member>
-        <member name="M:Penguin.Images.Objects.EXIFextractor.setTag(System.Int32,System.Int32,System.Int16,System.Byte[])">
+        <member name="M:Penguin.Images.Objects.EXIFextractor.SetTag(System.Int32,System.Int32,System.Int16,System.Byte[])">
              <summary>
             
              </summary>
@@ -372,45 +364,38 @@
              <param name="value"></param>
              <returns></returns>
         </member>
-        <member name="M:Penguin.Images.Objects.EXIFextractor.buildDB(System.Drawing.Imaging.PropertyItem[])">
+        <member name="M:Penguin.Images.Objects.EXIFextractor.BuildDB(System.Drawing.Imaging.PropertyItem[])">
              <summary>
             
              </summary>
         </member>
-        <member name="M:Penguin.Images.Objects.EXIFextractor.convertToInt16(System.Byte[])">
-             <summary>
-            
-             </summary>
-             <param name="arr"></param>
-             <returns></returns>
-        </member>
-        <member name="M:Penguin.Images.Objects.EXIFextractor.convertToInt16U(System.Byte[])">
+        <member name="M:Penguin.Images.Objects.EXIFextractor.ConvertToInt16U(System.Byte[])">
              <summary>
             
              </summary>
              <param name="arr"></param>
              <returns></returns>
         </member>
-        <member name="M:Penguin.Images.Objects.EXIFextractor.convertToInt32(System.Byte[])">
+        <member name="M:Penguin.Images.Objects.EXIFextractor.ConvertToInt32(System.Byte[])">
              <summary>
             
              </summary>
              <param name="arr"></param>
              <returns></returns>
         </member>
-        <member name="M:Penguin.Images.Objects.EXIFextractor.convertToInt32U(System.Byte[])">
+        <member name="M:Penguin.Images.Objects.EXIFextractor.ConvertToInt32U(System.Byte[])">
              <summary>
             
              </summary>
              <param name="arr"></param>
              <returns></returns>
         </member>
-        <member name="T:Penguin.Images.Objects.translation">
+        <member name="T:Penguin.Images.Objects.Translation">
             <summary>
             Summary description for translation.
             </summary>
         </member>
-        <member name="M:Penguin.Images.Objects.translation.#ctor">
+        <member name="M:Penguin.Images.Objects.Translation.#ctor">
              <summary>
             
              </summary>
@@ -425,6 +410,16 @@
             Wraps an image and allows for some basic operations
             </summary>
         </member>
+        <member name="P:Penguin.Images.PenguinImage.Bytes">
+            <summary>
+            Retrieves the altered underlying bytes
+            </summary>
+        </member>
+        <member name="T:Penguin.Images.PenguinImage.ResizeMode">
+            <summary>
+            The mode to use on the image to ensure it fits within the given dimensions
+            </summary>
+        </member>
         <member name="M:Penguin.Images.PenguinImage.#ctor(System.Byte[])">
             <summary>
             Constructs a new instance from a byte array
@@ -437,17 +432,6 @@
             </summary>
             <param name="image">The image source</param>
         </member>
-        <member name="P:Penguin.Images.PenguinImage.Bytes">
-            <summary>
-            Retrieves the altered underlying bytes
-            </summary>
-        </member>
-        <!-- Badly formed XML comment ignored for member "M:Penguin.Images.PenguinImage.Round(System.Single)" -->
-        <member name="T:Penguin.Images.PenguinImage.ResizeMode">
-            <summary>
-            The mode to use on the image to ensure it fits within the given dimensions
-            </summary>
-        </member>
         <member name="M:Penguin.Images.PenguinImage.Resize(System.Int32,System.Int32,Penguin.Images.PenguinImage.ResizeMode)">
             <summary>
             Resizes the image using the given mode
@@ -456,5 +440,6 @@
             <param name="Height">The new height</param>
             <param name="Mode">The mode to use</param>
         </member>
+        <!-- Badly formed XML comment ignored for member "M:Penguin.Images.PenguinImage.Round(System.Single)" -->
     </members>
 </doc>
