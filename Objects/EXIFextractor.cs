@@ -22,7 +22,6 @@ namespace Penguin.Images.Objects
 
         #region Constructors
 
-
         /// <summary>
         /// Constructs an instance of this class with the provided data
         /// </summary>
@@ -33,7 +32,7 @@ namespace Penguin.Images.Objects
             this.properties = new Hashtable();
             this.sp = sp;
             this.bmp = bmp ?? throw new ArgumentNullException(nameof(bmp));
-            this.myHash = new Translation();
+            this.myHash = new TranslationDictionary();
             this.BuildDB(bmp.PropertyItems);
         }
 
@@ -42,13 +41,12 @@ namespace Penguin.Images.Objects
         /// </summary>
         /// <param name="file">The file path to use as a source</param>
         /// <param name="sp"></param>
-        /// <param name="msp"></param>
         public EXIFextractor(string file, string sp)
         {
             this.properties = new Hashtable();
             this.sp = sp;
 
-            this.myHash = new Translation();
+            this.myHash = new TranslationDictionary();
             //
             this.BuildDB(GetExifProperties(file));
         }
@@ -289,11 +287,13 @@ namespace Penguin.Images.Objects
         /// <returns>An array of EXIF properties found on the image</returns>
         public static PropertyItem[] GetExifProperties(string fileName)
         {
-            FileStream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-            System.Drawing.Image image = System.Drawing.Image.FromStream(stream,
-                             /* useEmbeddedColorManagement = */ true,
-                             /* validateImageData = */ false);
-            return image.PropertyItems;
+            using (FileStream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            {
+                System.Drawing.Image image = System.Drawing.Image.FromStream(stream,
+                                 /* useEmbeddedColorManagement = */ true,
+                                 /* validateImageData = */ false);
+                return image.PropertyItems;
+            }
         }
 
         /// <summary>
@@ -353,11 +353,7 @@ namespace Penguin.Images.Objects
         private readonly System.Drawing.Bitmap bmp;
 
         //
-        private string data;
-
-
-        //
-        private readonly Translation myHash;
+        private readonly TranslationDictionary myHash;
 
         //
         private readonly Hashtable properties;
@@ -365,7 +361,56 @@ namespace Penguin.Images.Objects
         //
         private readonly string sp;
 
+        //
+        private string data;
+
         #endregion Fields
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <returns></returns>
+        private static uint ConvertToInt16U(byte[] arr)
+        {
+            if (arr.Length != 2)
+            {
+                return 0;
+            }
+            else
+            {
+                return Convert.ToUInt16(arr[1] << 8 | arr[0]);
+            }
+        }
+
+        private static int ConvertToInt32(byte[] arr)
+        {
+            if (arr.Length != 4)
+            {
+                return 0;
+            }
+            else
+            {
+                return arr[3] << 24 | arr[2] << 16 | arr[1] << 8 | arr[0];
+            }
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <returns></returns>
+        private static uint ConvertToInt32U(byte[] arr)
+        {
+            if (arr.Length != 4)
+            {
+                return 0;
+            }
+            else
+            {
+                return Convert.ToUInt32(arr[3] << 24 | arr[2] << 16 | arr[1] << 8 | arr[0]);
+            }
+        }
 
         /// <summary>
         ///
@@ -377,6 +422,11 @@ namespace Penguin.Images.Objects
         /// <returns></returns>
         private static PropertyItem CreatePropertyItem(short type, int tag, int len, byte[] value)
         {
+            if (value is null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             PropertyItem item;
 
             // Loads a PropertyItem from a Jpeg image stored in the assembly as a resource.
@@ -732,7 +782,7 @@ namespace Penguin.Images.Objects
                 //9 = SLONG A 32-bit (4 -byte) signed integer (2's complement notation),
                 else if (p.Type == 0x9)
                 {
-                    v = this.ConvertToInt32(p.Value).ToString();
+                    v = ConvertToInt32(p.Value).ToString();
                 }
                 //10 = SRATIONAL Two SLONGs. The first SLONG is the numerator and the second SLONG is the
                 //denominator.
@@ -743,8 +793,8 @@ namespace Penguin.Images.Objects
                     byte[] d = new byte[p.Len / 2];
                     Array.Copy(p.Value, 0, n, 0, p.Len / 2);
                     Array.Copy(p.Value, p.Len / 2, d, 0, p.Len / 2);
-                    int a = this.ConvertToInt32(n);
-                    int b = this.ConvertToInt32(d);
+                    int a = ConvertToInt32(n);
+                    int b = ConvertToInt32(d);
                     Rational r = new Rational(a, b);
                     //
                     // convert here
@@ -774,70 +824,20 @@ namespace Penguin.Images.Objects
                 this.data += this.sp;
             }
         }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="arr"></param>
-        /// <returns></returns>
-        private static uint ConvertToInt16U(byte[] arr)
-        {
-            if (arr.Length != 2)
-            {
-                return 0;
-            }
-            else
-            {
-                return Convert.ToUInt16(arr[1] << 8 | arr[0]);
-            }
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="arr"></param>
-        /// <returns></returns>
-        private int ConvertToInt32(byte[] arr)
-        {
-            if (arr.Length != 4)
-            {
-                return 0;
-            }
-            else
-            {
-                return arr[3] << 24 | arr[2] << 16 | arr[1] << 8 | arr[0];
-            }
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="arr"></param>
-        /// <returns></returns>
-        private static uint ConvertToInt32U(byte[] arr)
-        {
-            if (arr.Length != 4)
-            {
-                return 0;
-            }
-            else
-            {
-                return Convert.ToUInt32(arr[3] << 24 | arr[2] << 16 | arr[1] << 8 | arr[0]);
-            }
-        }
     }
 
     /// <summary>
     /// Summary description for translation.
     /// </summary>
-    public class Translation : Hashtable
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1010:Collections should implement generic interface", Justification = "<Pending>")]
+    public class TranslationDictionary : Hashtable
     {
         #region Constructors
 
         /// <summary>
         ///
         /// </summary>
-        public Translation()
+        public TranslationDictionary()
         {
             this.Add(0x8769, "Exif IFD");
             this.Add(0x8825, "Gps IFD");
@@ -1102,6 +1102,7 @@ namespace Penguin.Images.Objects
         #endregion Constructors
 
         #region Fields
+
         private IDictionaryEnumerator index;
 
         #endregion Fields
@@ -1150,12 +1151,9 @@ namespace Penguin.Images.Objects
 
         public string ToString(string sp)
         {
-            if (sp == null)
-            {
-                sp = "/";
-            }
+            sp = sp ?? "/";
 
-            return this.n.ToString() + sp + this.d.ToString();
+            return $"{n}{sp}{d}";
         }
 
         #endregion Methods

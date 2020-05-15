@@ -80,7 +80,7 @@ namespace Penguin.Images
         /// <summary>
         /// Applies a border radius.
         /// </summary>
-        /// <param name="Radius">The radius to apply. Any amount < 1 is a %, any amount over is a px</param>
+        /// <param name="Radius">The radius to apply. Any amount &lt; 1 is a %, any amount over is a px</param>
         public void Round(float Radius = 0.5f)
         {
             using (MagickImage image = new MagickImage(this.Bytes))
@@ -161,7 +161,6 @@ namespace Penguin.Images
         {
             using (MemoryStream ms = new MemoryStream())
             {
-
                 using (MagickImage image = new MagickImage(this.Bytes))
                 {
                     image.Format = MagickFormat.Png;
@@ -205,7 +204,6 @@ namespace Penguin.Images
         {
             using (MemoryStream ms = new MemoryStream())
             {
-
                 using (MagickImage image = new MagickImage(this.Bytes))
                 {
                     image.Format = MagickFormat.Png;
@@ -231,7 +229,6 @@ namespace Penguin.Images
         {
             using (MemoryStream ms = new MemoryStream())
             {
-
                 using (MagickImage image = new MagickImage(this.Bytes))
                 {
                     MagickGeometry size = new MagickGeometry(Width, Width);
@@ -248,7 +245,6 @@ namespace Penguin.Images
         {
             using (MemoryStream ms = new MemoryStream())
             {
-
                 using (MagickImage image = new MagickImage(this.Bytes))
                 {
                     MagickGeometry size = new MagickGeometry(Width, Width)

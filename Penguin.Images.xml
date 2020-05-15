@@ -96,7 +96,6 @@
             </summary>
             <param name="file">The file path to use as a source</param>
             <param name="sp"></param>
-            <param name="msp"></param>
         </member>
         <member name="P:Penguin.Images.Objects.EXIFextractor.Item(System.String)">
              <summary>
@@ -354,6 +353,20 @@
              </summary>
              <returns></returns>;
         </member>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.ConvertToInt16U(System.Byte[])">
+             <summary>
+            
+             </summary>
+             <param name="arr"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Penguin.Images.Objects.EXIFextractor.ConvertToInt32U(System.Byte[])">
+             <summary>
+            
+             </summary>
+             <param name="arr"></param>
+             <returns></returns>
+        </member>
         <member name="M:Penguin.Images.Objects.EXIFextractor.CreatePropertyItem(System.Int16,System.Int32,System.Int32,System.Byte[])">
              <summary>
             
@@ -369,33 +382,12 @@
             
              </summary>
         </member>
-        <member name="M:Penguin.Images.Objects.EXIFextractor.ConvertToInt16U(System.Byte[])">
-             <summary>
-            
-             </summary>
-             <param name="arr"></param>
-             <returns></returns>
-        </member>
-        <member name="M:Penguin.Images.Objects.EXIFextractor.ConvertToInt32(System.Byte[])">
-             <summary>
-            
-             </summary>
-             <param name="arr"></param>
-             <returns></returns>
-        </member>
-        <member name="M:Penguin.Images.Objects.EXIFextractor.ConvertToInt32U(System.Byte[])">
-             <summary>
-            
-             </summary>
-             <param name="arr"></param>
-             <returns></returns>
-        </member>
-        <member name="T:Penguin.Images.Objects.Translation">
+        <member name="T:Penguin.Images.Objects.TranslationDictionary">
             <summary>
             Summary description for translation.
             </summary>
         </member>
-        <member name="M:Penguin.Images.Objects.Translation.#ctor">
+        <member name="M:Penguin.Images.Objects.TranslationDictionary.#ctor">
              <summary>
             
              </summary>
@@ -440,6 +432,11 @@
             <param name="Height">The new height</param>
             <param name="Mode">The mode to use</param>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Penguin.Images.PenguinImage.Round(System.Single)" -->
+        <member name="M:Penguin.Images.PenguinImage.Round(System.Single)">
+            <summary>
+            Applies a border radius.
+            </summary>
+            <param name="Radius">The radius to apply. Any amount &lt; 1 is a %, any amount over is a px</param>
+        </member>
     </members>
 </doc>
