@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Penguin.Images.Extensions
 {
@@ -24,6 +28,111 @@ namespace Penguin.Images.Extensions
         {
             ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
             return codecs.FirstOrDefault(codec => codec.FormatID == image.RawFormat.Guid)?.MimeType;
+        }
+
+        public static IEnumerable<OverlappingPlane> FindOverlaps(this Image image, Image offsetImage)
+        {
+            return new BitmapReader(image).FindOverlaps(new BitmapReader(offsetImage));
+        }
+
+        public static IEnumerable<OverlappingPlane> FindOverlaps(this BitmapReader image, BitmapReader offsetImage)
+        {
+            if (image is null)
+            {
+                throw new ArgumentNullException(nameof(image));
+            }
+
+            if (offsetImage is null)
+            {
+                throw new ArgumentNullException(nameof(offsetImage));
+            }
+
+            for (int x = 0 - offsetImage.Width + 1; x < image.Width; x++)
+            {
+                for (int y = 0 - offsetImage.Height + 1; y < image.Height; y++)
+                {
+                    yield return new OverlappingPlane(image, offsetImage, new Point(x, y));
+                }
+            }
+        }
+
+        private static IEnumerable<Point> GetPoints<TImage>(this TImage source) where TImage : Image => new Rectangle(0, 0, source.Width, source.Height).GetPoints();
+
+        private static IEnumerable<Point> GetPoints(this Rectangle source)
+        {
+            for (int x = source.Left; x < source.Width + source.Left; x++)
+            {
+                for (int y = source.Top; y < source.Height + source.Top; y++)
+                {
+                    yield return new Point(x, y);
+                }
+            }
+        }
+
+        public static Bitmap Align<TImage, TTemplate>(this TImage image, TTemplate template, Color? key = null, bool multiThread = true) where TImage : Image where TTemplate : Image => new BitmapReader(image).Align(new BitmapReader(template), key, multiThread);
+
+        public static Bitmap Align(this BitmapReader image, BitmapReader template, Color? key = null, bool multiThread = true)
+        {
+            if (image is null)
+            {
+                throw new ArgumentNullException(nameof(image));
+            }
+
+            if (template is null)
+            {
+                throw new ArgumentNullException(nameof(template));
+            }
+
+            Color Key = key ?? Color.Black;
+
+            OverlappingPlane bestPlane = null;
+
+            object swapLock = new object();
+
+            int rCount = 0;
+
+            DateTime lastWrite = DateTime.Now;
+
+            int lastP = 0;
+
+            List<OverlappingPlane> planes = template.FindOverlaps(image).ToList();
+
+            int pCount = planes.Count;
+
+            void ProcessPlane(OverlappingPlane plane)
+            {
+                double s = plane.Diff();
+
+                if (bestPlane is null || s < bestPlane.Diff(Key, OverlappingPlane.ClippingStyle.Diff))
+                {
+                    bestPlane = plane;
+                }
+
+                int p = ((rCount++ * 100) / pCount);
+
+                if (p > lastP)
+                {
+                    lastP = p;
+
+                    Console.WriteLine($"%{p:00.##} ({(DateTime.Now - lastWrite).TotalMilliseconds}ms)");
+
+                    lastWrite = DateTime.Now;
+                }
+            }
+
+            if (multiThread)
+            {
+                Parallel.ForEach(planes, ProcessPlane);
+            }
+            else
+            {
+                foreach (OverlappingPlane plane in planes)
+                {
+                    ProcessPlane(plane);
+                }
+            }
+
+            return bestPlane.Extract();
         }
 
         /// <summary>
