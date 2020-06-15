@@ -167,11 +167,22 @@ namespace Penguin.Images
 
         public Bitmap Extract()
         {
+            return this.Extract(Color.Black);
+        }
+
+        public Bitmap Extract(Color? key)
+        {
             Bitmap toReturn = new Bitmap(Max.X, Max.Y);
+
+            if (key.HasValue)
+            {
+                Graphics g = Graphics.FromImage(toReturn);
+                g.Clear(key.Value);
+            }
 
             foreach (OverlappingPoint op in this.OverlappingPoints)
             {
-                SmallColor c = OffsetImage.GetPixel(op.Offset);
+                SmallColor c = OffsetImage.Image.GetPixel(op.Offset);
 
                 toReturn.SetPixel(op.Anchor.X, op.Anchor.Y, Color.FromArgb(c.A, c.R, c.G, c.B));
             }

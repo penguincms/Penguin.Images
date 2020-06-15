@@ -34,5 +34,7 @@ namespace Penguin.Images
                        Math.Abs(this.A - other.A);
             }
         }
+
+        public override string ToString() => $"#{R:X2}{G:X2}{B:X2}{A:X2}";
     }
 }

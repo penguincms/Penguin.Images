@@ -58,6 +58,8 @@ namespace Penguin.Images
                             a = srcPointer[3]; // Alpha
 
                             npixels[i++] = new SmallColor(r, g, b, a);
+
+                            srcPointer += 4;
                         }
                     }
                 }
