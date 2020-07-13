@@ -134,11 +134,11 @@ namespace Penguin.Images
                         {
                             fixed (SmallColor* o = &oPixels[((y - OffsetImage.Offset.Y) * oWidth) + (Min.X - OffsetImage.Offset.X)])
                             {
+                                SmallColor* aVC = a;
+                                SmallColor* oVC = o;
+
                                 for (int x = 0; x <= xl; x++)
                                 {
-                                    SmallColor* aVC = a;
-                                    SmallColor* oVC = o;
-
                                     compC++;
                                     totalC += (*aVC).Diff255(*oVC);
 

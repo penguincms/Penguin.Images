@@ -11,9 +11,17 @@ namespace Penguin.Images
 {
     public class BitmapReader
     {
-        private Bitmap backing;
+        public SmallColor this[int x, int y]
+        {
+            get
+            {
+                return Pixels[(y * Width) + x];
+            }
+        }
 
-        private object backingLock = new object();
+        private readonly Bitmap backing;
+
+        private readonly object backingLock = new object();
 
         public int Height { get; private set; }
 
@@ -72,14 +80,6 @@ namespace Penguin.Images
 
         public BitmapReader(Image source) : this(new Bitmap(source))
         {
-        }
-
-        public SmallColor this[int x, int y]
-        {
-            get
-            {
-                return Pixels[(y * Width) + x];
-            }
         }
 
         public Bitmap Clone(Rectangle r)

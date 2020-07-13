@@ -56,19 +56,6 @@ namespace Penguin.Images.Extensions
             }
         }
 
-        private static IEnumerable<Point> GetPoints<TImage>(this TImage source) where TImage : Image => new Rectangle(0, 0, source.Width, source.Height).GetPoints();
-
-        private static IEnumerable<Point> GetPoints(this Rectangle source)
-        {
-            for (int x = source.Left; x < source.Width + source.Left; x++)
-            {
-                for (int y = source.Top; y < source.Height + source.Top; y++)
-                {
-                    yield return new Point(x, y);
-                }
-            }
-        }
-
         public static Bitmap Align<TImage, TTemplate>(this TImage image, TTemplate template, Color? key = null, bool multiThread = true) where TImage : Image where TTemplate : Image => new BitmapReader(image).Align(new BitmapReader(template), key, multiThread);
 
         public static Bitmap Align(this BitmapReader image, BitmapReader template, Color? key = null, bool multiThread = true)
