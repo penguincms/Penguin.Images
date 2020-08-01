@@ -7,8 +7,24 @@ namespace Penguin.Images.Extensions
 {
     public static class BitmapExtensions
     {
-        public static Color GetPixel(this Bitmap b, Point p) => b.GetPixel(p.X, p.Y);
+        public static Color GetPixel(this Bitmap b, Point p)
+        {
+            if (b is null)
+            {
+                throw new ArgumentNullException(nameof(b));
+            }
 
-        public static void SetPixel(this Bitmap b, Point p, Color c) => b.SetPixel(p.X, p.Y, c);
+            return b.GetPixel(p.X, p.Y);
+        }
+
+        public static void SetPixel(this Bitmap b, Point p, Color c)
+        {
+            if (b is null)
+            {
+                throw new ArgumentNullException(nameof(b));
+            }
+
+            b.SetPixel(p.X, p.Y, c);
+        }
     }
 }
