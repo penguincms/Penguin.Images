@@ -1,10 +1,6 @@
-﻿using Penguin.Images.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Drawing;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 namespace Penguin.Images
 {
