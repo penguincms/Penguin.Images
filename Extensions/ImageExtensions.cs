@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -56,7 +54,10 @@ namespace Penguin.Images.Extensions
             }
         }
 
-        public static Bitmap Align<TImage, TTemplate>(this TImage image, TTemplate template, Color? key = null, bool multiThread = true) where TImage : Image where TTemplate : Image => new BitmapReader(image).Align(new BitmapReader(template), key, multiThread);
+        public static Bitmap Align<TImage, TTemplate>(this TImage image, TTemplate template, Color? key = null, bool multiThread = true) where TImage : Image where TTemplate : Image
+        {
+            return new BitmapReader(image).Align(new BitmapReader(template), key, multiThread);
+        }
 
         public static Bitmap Align(this BitmapReader image, BitmapReader template, Color? key = null, bool multiThread = true)
         {

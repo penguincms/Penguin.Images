@@ -1,26 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace Penguin.Images
 {
     public struct SmallColor
     {
-        public byte A;
+        public byte A { get; set; }
 
-        public byte B;
+        public byte B { get; set; }
 
-        public byte G;
+        public byte G { get; set; }
 
-        public byte R;
+        public byte R { get; set; }
 
         public SmallColor(byte r, byte g, byte b, byte a)
         {
-            R = r;
-            G = g;
-            B = b;
-            A = a;
+            this.R = r;
+            this.G = g;
+            this.B = b;
+            this.A = a;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -35,6 +33,9 @@ namespace Penguin.Images
             }
         }
 
-        public override string ToString() => $"#{R:X2}{G:X2}{B:X2}{A:X2}";
+        public override string ToString()
+        {
+            return $"#{this.R:X2}{this.G:X2}{this.B:X2}{this.A:X2}";
+        }
     }
 }

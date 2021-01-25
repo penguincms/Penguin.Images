@@ -1153,7 +1153,7 @@ namespace Penguin.Images.Objects
         {
             sp = sp ?? "/";
 
-            return $"{n}{sp}{d}";
+            return $"{this.n}{sp}{this.d}";
         }
 
         #endregion Methods

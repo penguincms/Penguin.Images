@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
+﻿using System.Drawing;
 
 namespace Penguin.Images
 {
@@ -13,19 +10,22 @@ namespace Penguin.Images
 
         public OffsetImage(Image source)
         {
-            Image = new BitmapReader(source);
+            this.Image = new BitmapReader(source);
         }
 
         public OffsetImage(BitmapReader source)
         {
-            Image = source;
+            this.Image = source;
         }
 
         public SmallColor GetPixel(int x, int y)
         {
-            return Image.GetPixel(x - (Offset.X), y - (Offset.Y));
+            return this.Image.GetPixel(x - (this.Offset.X), y - (this.Offset.Y));
         }
 
-        public SmallColor GetPixel(Point p) => this.GetPixel(p.X, p.Y);
+        public SmallColor GetPixel(Point p)
+        {
+            return this.GetPixel(p.X, p.Y);
+        }
     }
 }

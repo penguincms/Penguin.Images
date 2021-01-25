@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
+﻿using System.Drawing;
 
 namespace Penguin.Images
 {
     public struct OverlappingPoint
     {
-        public Point Anchor;
-        public Point Offset;
+        public Point Anchor { get; set; }
+        public Point Offset { get; set; }
     }
 }
