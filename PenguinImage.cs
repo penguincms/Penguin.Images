@@ -13,7 +13,6 @@ namespace Penguin.Images
         /// <summary>
         /// Retrieves the altered underlying bytes
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1819:Properties should not return arrays", Justification = "<Pending>")]
         public byte[] Bytes { get; private set; }
 
         /// <summary>
