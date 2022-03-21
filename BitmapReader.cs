@@ -80,19 +80,10 @@ namespace Penguin.Images
             }
         }
 
-        public SmallColor GetPixel(int x, int y)
-        {
-            return this.Pixels[(y * this.Width) + x];
-        }
+        public SmallColor GetPixel(int x, int y) => this.Pixels[(y * this.Width) + x];
 
-        public SmallColor GetPixel(Point p)
-        {
-            return this.Pixels[(p.Y * this.Width) + p.X];
-        }
+        public SmallColor GetPixel(Point p) => this.Pixels[(p.Y * this.Width) + p.X];
 
-        public ImmutableArray<SmallColor> GetPixels()
-        {
-            return this.Pixels.ToImmutableArray();
-        }
+        public ImmutableArray<SmallColor> GetPixels() => this.Pixels.ToImmutableArray();
     }
 }

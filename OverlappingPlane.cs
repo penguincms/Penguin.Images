@@ -161,10 +161,7 @@ namespace Penguin.Images
             }
         }
 
-        public Bitmap Extract()
-        {
-            return this.Extract(Color.Black);
-        }
+        public Bitmap Extract() => this.Extract(Color.Black);
 
         public Bitmap Extract(Color? key)
         {

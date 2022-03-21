@@ -18,14 +18,8 @@ namespace Penguin.Images
             this.Image = source;
         }
 
-        public SmallColor GetPixel(int x, int y)
-        {
-            return this.Image.GetPixel(x - (this.Offset.X), y - (this.Offset.Y));
-        }
+        public SmallColor GetPixel(int x, int y) => this.Image.GetPixel(x - (this.Offset.X), y - (this.Offset.Y));
 
-        public SmallColor GetPixel(Point p)
-        {
-            return this.GetPixel(p.X, p.Y);
-        }
+        public SmallColor GetPixel(Point p) => this.GetPixel(p.X, p.Y);
     }
 }

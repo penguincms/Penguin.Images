@@ -300,11 +300,9 @@ namespace Penguin.Images.Objects
         /// Returns an enumerator for the properties extracted
         /// </summary>
         /// <returns>an enumerator for the properties extracted</returns>
-        public IEnumerator GetEnumerator()
-        {
+        public IEnumerator GetEnumerator() =>
             // TODO:  Add EXIFextractor.GetEnumerator implementation
-            return (new EXIFextractorEnumerator(this.properties));
-        }
+            (new EXIFextractorEnumerator(this.properties));
 
         /// <summary>
         ///
@@ -340,10 +338,7 @@ namespace Penguin.Images.Objects
         ///
         /// </summary>
         /// <returns></returns>;
-        public override string ToString()
-        {
-            return this.data;
-        }
+        public override string ToString() => this.data;
 
         #endregion Methods
 
@@ -1084,10 +1079,7 @@ namespace Penguin.Images.Objects
             }
         }
 
-        public void Reset()
-        {
-            this.index = null;
-        }
+        public void Reset() => this.index = null;
 
         #endregion Methods
 
