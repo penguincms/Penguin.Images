@@ -28,7 +28,10 @@ namespace Penguin.Images.Extensions
             return codecs.FirstOrDefault(codec => codec.FormatID == image.RawFormat.Guid)?.MimeType;
         }
 
-        public static IEnumerable<OverlappingPlane> FindOverlaps(this Image image, Image offsetImage) => new BitmapReader(image).FindOverlaps(new BitmapReader(offsetImage));
+        public static IEnumerable<OverlappingPlane> FindOverlaps(this Image image, Image offsetImage)
+        {
+            return new BitmapReader(image).FindOverlaps(new BitmapReader(offsetImage));
+        }
 
         public static IEnumerable<OverlappingPlane> FindOverlaps(this BitmapReader image, BitmapReader offsetImage)
         {
@@ -51,7 +54,10 @@ namespace Penguin.Images.Extensions
             }
         }
 
-        public static Bitmap Align<TImage, TTemplate>(this TImage image, TTemplate template, Color? key = null, bool multiThread = true) where TImage : Image where TTemplate : Image => new BitmapReader(image).Align(new BitmapReader(template), key, multiThread);
+        public static Bitmap Align<TImage, TTemplate>(this TImage image, TTemplate template, Color? key = null, bool multiThread = true) where TImage : Image where TTemplate : Image
+        {
+            return new BitmapReader(image).Align(new BitmapReader(template), key, multiThread);
+        }
 
         public static Bitmap Align(this BitmapReader image, BitmapReader template, Color? key = null, bool multiThread = true)
         {
@@ -90,7 +96,7 @@ namespace Penguin.Images.Extensions
                     bestPlane = plane;
                 }
 
-                int p = ((rCount++ * 100) / pCount);
+                int p = rCount++ * 100 / pCount;
 
                 if (p > lastP)
                 {
@@ -104,7 +110,7 @@ namespace Penguin.Images.Extensions
 
             if (multiThread)
             {
-                Parallel.ForEach(planes, ProcessPlane);
+                _ = Parallel.ForEach(planes, ProcessPlane);
             }
             else
             {
@@ -160,7 +166,7 @@ namespace Penguin.Images.Extensions
                 throw new ArgumentNullException(nameof(source));
             }
 
-            format = format ?? ImageFormat.Gif;
+            format = format?? ImageFormat.Gif;
 
             using (MemoryStream ms = new MemoryStream())
             {
@@ -175,9 +181,11 @@ namespace Penguin.Images.Extensions
         /// <param name="img">The image to resize</param>
         /// <param name="thumbSize">The size of the image to return</param>
         /// <returns>A thumbnail for the image</returns>
-        public static Bitmap GenerateThumbnail<T>(this T img, Size thumbSize) where T : Image =>
+        public static Bitmap GenerateThumbnail<T>(this T img, Size thumbSize) where T : Image
+        {
             // return img.PadImage().GetThumbnailImage(thumbSize.Width, thumbSize.Height, () => false, IntPtr.Zero);
-            img.Resize(thumbSize);
+            return img.Resize(thumbSize);
+        }
 
         /// <summary>
         /// Pads an image out so that it has a 1:1 aspect ratio

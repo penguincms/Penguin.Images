@@ -27,7 +27,7 @@ namespace Penguin.Images
                         yield return new OverlappingPoint
                         {
                             Anchor = new Point(x, y),
-                            Offset = new Point(x - (this.OffsetImage.Offset.X), y - (this.OffsetImage.Offset.Y))
+                            Offset = new Point(x - this.OffsetImage.Offset.X, y - this.OffsetImage.Offset.Y)
                         };
                     }
                 }
@@ -152,16 +152,19 @@ namespace Penguin.Images
 
                     totalC += diffAmount * BYTE_DEPTH;
 
-                    compC = (this.AnchorImage.Image.Height * this.AnchorImage.Image.Width);
+                    compC = this.AnchorImage.Image.Height * this.AnchorImage.Image.Width;
                 }
 
-                this.diff = (totalC / (double)BYTE_DEPTH) / compC;
+                this.diff = totalC / (double)BYTE_DEPTH / compC;
 
                 return this.diff.Value;
             }
         }
 
-        public Bitmap Extract() => this.Extract(Color.Black);
+        public Bitmap Extract()
+        {
+            return this.Extract(Color.Black);
+        }
 
         public Bitmap Extract(Color? key)
         {

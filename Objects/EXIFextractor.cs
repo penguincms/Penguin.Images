@@ -300,9 +300,11 @@ namespace Penguin.Images.Objects
         /// Returns an enumerator for the properties extracted
         /// </summary>
         /// <returns>an enumerator for the properties extracted</returns>
-        public IEnumerator GetEnumerator() =>
+        public IEnumerator GetEnumerator()
+        {
             // TODO:  Add EXIFextractor.GetEnumerator implementation
-            (new EXIFextractorEnumerator(this.properties));
+            return new EXIFextractorEnumerator(this.properties);
+        }
 
         /// <summary>
         ///
@@ -338,7 +340,28 @@ namespace Penguin.Images.Objects
         ///
         /// </summary>
         /// <returns></returns>;
-        public override string ToString() => this.data;
+
+        /* Unmerged change from project 'Penguin.Images.Local (netstandard2.1)'
+        Before:
+                public override string ToString() => this.data;
+        After:
+                public override string ToString()
+                {
+                    return this.data;
+        */
+
+        /* Unmerged change from project 'Penguin.Images.Local (net5.0)'
+        Before:
+                public override string ToString() => this.data;
+        After:
+                public override string ToString()
+                {
+                    return this.data;
+        */
+        public override string ToString()
+        {
+            return this.data;
+        }
 
         #endregion Methods
 
@@ -374,7 +397,7 @@ namespace Penguin.Images.Objects
             }
             else
             {
-                return Convert.ToUInt16(arr[1] << 8 | arr[0]);
+                return Convert.ToUInt16((arr[1] << 8) | arr[0]);
             }
         }
 
@@ -386,7 +409,7 @@ namespace Penguin.Images.Objects
             }
             else
             {
-                return arr[3] << 24 | arr[2] << 16 | arr[1] << 8 | arr[0];
+                return (arr[3] << 24) | (arr[2] << 16) | (arr[1] << 8) | arr[0];
             }
         }
 
@@ -403,7 +426,7 @@ namespace Penguin.Images.Objects
             }
             else
             {
-                return Convert.ToUInt32(arr[3] << 24 | arr[2] << 16 | arr[1] << 8 | arr[0]);
+                return Convert.ToUInt32((arr[3] << 24) | (arr[2] << 16) | (arr[1] << 8) | arr[0]);
             }
         }
 
@@ -1079,7 +1102,10 @@ namespace Penguin.Images.Objects
             }
         }
 
-        public void Reset() => this.index = null;
+        public void Reset()
+        {
+            this.index = null;
+        }
 
         #endregion Methods
 

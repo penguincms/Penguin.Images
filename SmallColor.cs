@@ -33,6 +33,9 @@ namespace Penguin.Images
             }
         }
 
-        public override string ToString() => $"#{this.R:X2}{this.G:X2}{this.B:X2}{this.A:X2}";
+        public override string ToString()
+        {
+            return $"#{this.R:X2}{this.G:X2}{this.B:X2}{this.A:X2}";
+        }
     }
 }

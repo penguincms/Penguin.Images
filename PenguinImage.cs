@@ -166,7 +166,7 @@ namespace Penguin.Images
 
                     using (MagickImage mask = new MagickImage(MagickColors.White, image.Width, image.Height))
                     {
-                        new ImageMagick.Drawables()
+                        _ = new ImageMagick.Drawables()
                             .FillColor(MagickColors.Black)
                             .StrokeColor(MagickColors.Black)
                             .Polygon(new PointD(0, 0), new PointD(0, size), new PointD(size, 0))
