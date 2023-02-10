@@ -8,6 +8,7 @@ namespace Penguin.Images
     {
         private const int BYTE_DEPTH = 255 * 4;
         private double? diff;
+
         public OffsetImage AnchorImage { get; private set; }
 
         public Point Max { get; private set; }

@@ -5,6 +5,7 @@ namespace Penguin.Images
     public struct OverlappingPoint : System.IEquatable<OverlappingPoint>
     {
         public Point Anchor { get; set; }
+
         public Point Offset { get; set; }
 
         public override bool Equals(object obj)
