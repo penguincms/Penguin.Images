@@ -10,22 +10,22 @@ namespace Penguin.Images
 
         public OffsetImage(Image source)
         {
-            this.Image = new BitmapReader(source);
+            Image = new BitmapReader(source);
         }
 
         public OffsetImage(BitmapReader source)
         {
-            this.Image = source;
+            Image = source;
         }
 
         public SmallColor GetPixel(int x, int y)
         {
-            return this.Image.GetPixel(x - this.Offset.X, y - this.Offset.Y);
+            return Image.GetPixel(x - Offset.X, y - Offset.Y);
         }
 
         public SmallColor GetPixel(Point p)
         {
-            return this.GetPixel(p.X, p.Y);
+            return GetPixel(p.X, p.Y);
         }
     }
 }

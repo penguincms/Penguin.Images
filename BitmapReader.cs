@@ -7,11 +7,11 @@ namespace Penguin.Images
 {
     public class BitmapReader
     {
-        public SmallColor this[int x, int y] => this.Pixels[(y * this.Width) + x];
+        public SmallColor this[int x, int y] => Pixels[(y * Width) + x];
 
         private readonly Bitmap backing;
 
-        private readonly object backingLock = new object();
+        private readonly object backingLock = new();
 
         public int Height { get; private set; }
 
@@ -25,13 +25,13 @@ namespace Penguin.Images
 
         public BitmapReader(Bitmap source)
         {
-            this.backing = source ?? throw new ArgumentNullException(nameof(source));
+            backing = source ?? throw new ArgumentNullException(nameof(source));
 
             SmallColor[] npixels = new SmallColor[source.Width * source.Height];
 
-            lock (this.backingLock)
+            lock (backingLock)
             {
-                BitmapData srcData = this.backing.LockBits(new Rectangle(0, 0, this.backing.Width, this.backing.Height), ImageLockMode.ReadOnly, this.backing.PixelFormat);
+                BitmapData srcData = backing.LockBits(new Rectangle(0, 0, backing.Width, backing.Height), ImageLockMode.ReadOnly, backing.PixelFormat);
 
                 unsafe
                 {
@@ -41,14 +41,14 @@ namespace Penguin.Images
                     byte g;
                     byte b;
                     byte a;
-                    this.Width = source.Width;
-                    this.Height = source.Height;
+                    Width = source.Width;
+                    Height = source.Height;
 
                     int i = 0;
 
-                    for (int x = 0; x < this.Width; x++)
+                    for (int x = 0; x < Width; x++)
                     {
-                        for (int y = 0; y < this.Height; y++)
+                        for (int y = 0; y < Height; y++)
                         {
                             b = srcPointer[0]; // Blue
                             g = srcPointer[1]; // Green
@@ -62,10 +62,10 @@ namespace Penguin.Images
                     }
                 }
 
-                this.backing.UnlockBits(srcData);
+                backing.UnlockBits(srcData);
             }
 
-            this.Pixels = npixels;
+            Pixels = npixels;
         }
 
         public BitmapReader(Image source) : this(new Bitmap(source))
@@ -74,25 +74,25 @@ namespace Penguin.Images
 
         public Bitmap Clone(Rectangle r)
         {
-            lock (this.backingLock)
+            lock (backingLock)
             {
-                return this.backing.Clone(r, this.backing.PixelFormat);
+                return backing.Clone(r, backing.PixelFormat);
             }
         }
 
         public SmallColor GetPixel(int x, int y)
         {
-            return this.Pixels[(y * this.Width) + x];
+            return Pixels[(y * Width) + x];
         }
 
         public SmallColor GetPixel(Point p)
         {
-            return this.Pixels[(p.Y * this.Width) + p.X];
+            return Pixels[(p.Y * Width) + p.X];
         }
 
         public ImmutableArray<SmallColor> GetPixels()
         {
-            return this.Pixels.ToImmutableArray();
+            return Pixels.ToImmutableArray();
         }
     }
 }

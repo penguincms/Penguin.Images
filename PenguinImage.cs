@@ -31,7 +31,7 @@ namespace Penguin.Images
         /// <param name="SourceData">The file data</param>
         public PenguinImage(byte[] SourceData)
         {
-            this.Bytes = SourceData;
+            Bytes = SourceData;
         }
 
         /// <summary>
@@ -45,11 +45,9 @@ namespace Penguin.Images
                 throw new ArgumentNullException(nameof(image));
             }
 
-            using (MemoryStream ms = new MemoryStream())
-            {
-                image.Save(ms, ImageFormat.Png);
-                this.Bytes = ms.ToArray();
-            }
+            using MemoryStream ms = new();
+            image.Save(ms, ImageFormat.Png);
+            Bytes = ms.ToArray();
         }
 
         /// <summary>
@@ -63,15 +61,15 @@ namespace Penguin.Images
             switch (Mode)
             {
                 case ResizeMode.Crop:
-                    this.CropResize(Width, Height);
+                    CropResize(Width, Height);
                     break;
 
                 case ResizeMode.Stretch:
-                    this.StretchResize(Width);
+                    StretchResize(Width);
                     break;
 
                 case ResizeMode.Fit:
-                    this.FitResize(Width);
+                    FitResize(Width);
                     break;
             }
         }
@@ -82,182 +80,158 @@ namespace Penguin.Images
         /// <param name="Radius">The radius to apply. Any amount &lt; 1 is a %, any amount over is a px</param>
         public void Round(float Radius = 0.5f)
         {
-            using (MagickImage image = new MagickImage(this.Bytes))
+            using MagickImage image = new(Bytes);
+            int Effective50 = (int)(Math.Min(image.Width, image.Height) * .01 * 50);
+            int r = Radius < 1 ? (int)(Math.Min(image.Width, image.Height) * .01 * Radius) : (int)Radius;
+            if (r == Effective50)
             {
-                int Effective50 = (int)(Math.Min(image.Width, image.Height) * .01 * 50);
-                int r;
-
-                if (Radius < 1)
-                {
-                    r = (int)(Math.Min(image.Width, image.Height) * .01 * Radius);
-                }
-                else
-                {
-                    r = (int)Radius;
-                }
-
-                if (r == Effective50)
-                {
-                    this.DistortRound();
-                }
-                else
-                {
-                    this.CropRound(r);
-                }
+                DistortRound();
+            }
+            else
+            {
+                CropRound(r);
             }
         }
 
         private void CropResize(int width, int height)
         {
-            using (MemoryStream ms = new MemoryStream())
+            using MemoryStream ms = new();
+            // FullPath is the new file's path.
+            using (MagickImage image = new(Bytes))
             {
-                // FullPath is the new file's path.
-                using (MagickImage image = new MagickImage(this.Bytes))
+                if (image.Height != height || image.Width != width)
                 {
-                    if (image.Height != height || image.Width != width)
+                    decimal result_ratio = height / (decimal)width;
+                    decimal current_ratio = image.Height / (decimal)image.Width;
+
+                    bool preserve_width = false;
+                    if (current_ratio > result_ratio)
                     {
-                        decimal result_ratio = height / (decimal)width;
-                        decimal current_ratio = image.Height / (decimal)image.Width;
-
-                        bool preserve_width = false;
-                        if (current_ratio > result_ratio)
-                        {
-                            preserve_width = true;
-                        }
-
-                        int new_width;
-
-                        int new_height;
-                        if (preserve_width)
-                        {
-                            new_width = width;
-                            new_height = (int)Math.Round(current_ratio * new_width);
-                        }
-                        else
-                        {
-                            new_height = height;
-                            new_width = (int)Math.Round(new_height / current_ratio);
-                        }
-
-                        string geomStr = $"{width}x{height}";
-                        string newGeomStr = $"{new_width}x{new_height}";
-
-                        MagickGeometry intermediate_geo = new MagickGeometry(newGeomStr);
-                        MagickGeometry final_geo = new MagickGeometry(geomStr);
-
-                        image.Resize(intermediate_geo);
-                        image.Crop(final_geo);
+                        preserve_width = true;
                     }
 
-                    image.Write(ms);
+                    int new_width;
+
+                    int new_height;
+                    if (preserve_width)
+                    {
+                        new_width = width;
+                        new_height = (int)Math.Round(current_ratio * new_width);
+                    }
+                    else
+                    {
+                        new_height = height;
+                        new_width = (int)Math.Round(new_height / current_ratio);
+                    }
+
+                    string geomStr = $"{width}x{height}";
+                    string newGeomStr = $"{new_width}x{new_height}";
+
+                    MagickGeometry intermediate_geo = new(newGeomStr);
+                    MagickGeometry final_geo = new(geomStr);
+
+                    image.Resize(intermediate_geo);
+                    image.Crop(final_geo);
                 }
 
-                this.Bytes = ms.ToArray();
+                image.Write(ms);
             }
+
+            Bytes = ms.ToArray();
         }
 
         private void CropRound(int size)
         {
-            using (MemoryStream ms = new MemoryStream())
+            using MemoryStream ms = new();
+            using (MagickImage image = new(Bytes))
             {
-                using (MagickImage image = new MagickImage(this.Bytes))
+                image.Format = MagickFormat.Png;
+
+                using MagickImage mask = new(MagickColors.White, image.Width, image.Height);
+                _ = new ImageMagick.Drawables()
+                    .FillColor(MagickColors.Black)
+                    .StrokeColor(MagickColors.Black)
+                    .Polygon(new PointD(0, 0), new PointD(0, size), new PointD(size, 0))
+                    .Polygon(new PointD(mask.Width, 0), new PointD(mask.Width, size), new PointD(mask.Width - size, 0))
+                    .Polygon(new PointD(0, mask.Height), new PointD(0, mask.Height - size), new PointD(size, mask.Height))
+                    .Polygon(new PointD(mask.Width, mask.Height), new PointD(mask.Width, mask.Height - size), new PointD(mask.Width - size, mask.Height))
+                    .FillColor(MagickColors.White)
+                    .StrokeColor(MagickColors.White)
+                    .Circle(size, size, size, 0)
+                    .Circle(mask.Width - size, size, mask.Width - size, 0)
+                    .Circle(size, mask.Height - size, 0, mask.Height - size)
+                    .Circle(mask.Width - size, mask.Height - size, mask.Width - size, mask.Height)
+                    .Draw(mask);
+
+                // This copies the pixels that were already transparent on the mask.
+                using (IMagickImage imageAlpha = image.Clone())
                 {
-                    image.Format = MagickFormat.Png;
-
-                    using (MagickImage mask = new MagickImage(MagickColors.White, image.Width, image.Height))
-                    {
-                        _ = new ImageMagick.Drawables()
-                            .FillColor(MagickColors.Black)
-                            .StrokeColor(MagickColors.Black)
-                            .Polygon(new PointD(0, 0), new PointD(0, size), new PointD(size, 0))
-                            .Polygon(new PointD(mask.Width, 0), new PointD(mask.Width, size), new PointD(mask.Width - size, 0))
-                            .Polygon(new PointD(0, mask.Height), new PointD(0, mask.Height - size), new PointD(size, mask.Height))
-                            .Polygon(new PointD(mask.Width, mask.Height), new PointD(mask.Width, mask.Height - size), new PointD(mask.Width - size, mask.Height))
-                            .FillColor(MagickColors.White)
-                            .StrokeColor(MagickColors.White)
-                            .Circle(size, size, size, 0)
-                            .Circle(mask.Width - size, size, mask.Width - size, 0)
-                            .Circle(size, mask.Height - size, 0, mask.Height - size)
-                            .Circle(mask.Width - size, mask.Height - size, mask.Width - size, mask.Height)
-                            .Draw(mask);
-
-                        // This copies the pixels that were already transparent on the mask.
-                        using (IMagickImage imageAlpha = image.Clone())
-                        {
-                            imageAlpha.Alpha(AlphaOption.Extract);
-                            imageAlpha.Opaque(MagickColors.White, MagickColors.None);
-                            mask.Composite(imageAlpha, CompositeOperator.Over);
-                        }
-
-                        mask.HasAlpha = false;
-                        image.HasAlpha = false;
-                        image.Composite(mask, CompositeOperator.CopyAlpha);
-                        image.Write(ms);
-                    }
+                    imageAlpha.Alpha(AlphaOption.Extract);
+                    imageAlpha.Opaque(MagickColors.White, MagickColors.None);
+                    mask.Composite(imageAlpha, CompositeOperator.Over);
                 }
-                this.Bytes = ms.ToArray();
+
+                mask.HasAlpha = false;
+                image.HasAlpha = false;
+                image.Composite(mask, CompositeOperator.CopyAlpha);
+                image.Write(ms);
             }
+            Bytes = ms.ToArray();
         }
 
         private void DistortRound()
         {
-            using (MemoryStream ms = new MemoryStream())
+            using MemoryStream ms = new();
+            using (MagickImage image = new(Bytes))
             {
-                using (MagickImage image = new MagickImage(this.Bytes))
-                {
-                    image.Format = MagickFormat.Png;
+                image.Format = MagickFormat.Png;
 
-                    image.Alpha(AlphaOption.Set);
-                    IMagickImage copy = image.Clone();
+                image.Alpha(AlphaOption.Set);
+                IMagickImage copy = image.Clone();
 
-                    copy.Distort(DistortMethod.DePolar, 0);
-                    copy.VirtualPixelMethod = VirtualPixelMethod.HorizontalTile;
-                    copy.BackgroundColor = MagickColors.None;
-                    copy.Distort(DistortMethod.Polar, 0);
+                copy.Distort(DistortMethod.DePolar, 0);
+                copy.VirtualPixelMethod = VirtualPixelMethod.HorizontalTile;
+                copy.BackgroundColor = MagickColors.None;
+                copy.Distort(DistortMethod.Polar, 0);
 
-                    image.Compose = CompositeOperator.DstIn;
-                    image.Composite(copy, CompositeOperator.CopyAlpha);
+                image.Compose = CompositeOperator.DstIn;
+                image.Composite(copy, CompositeOperator.CopyAlpha);
 
-                    image.Write(ms);
-                }
-                this.Bytes = ms.ToArray();
+                image.Write(ms);
             }
+            Bytes = ms.ToArray();
         }
 
         private void FitResize(int Width)
         {
-            using (MemoryStream ms = new MemoryStream())
+            using MemoryStream ms = new();
+            using (MagickImage image = new(Bytes))
             {
-                using (MagickImage image = new MagickImage(this.Bytes))
-                {
-                    MagickGeometry size = new MagickGeometry(Width, Width);
-                    image.Resize(size);
-                    // Save the result
-                    image.Write(ms);
-                }
-
-                this.Bytes = ms.ToArray();
+                MagickGeometry size = new(Width, Width);
+                image.Resize(size);
+                // Save the result
+                image.Write(ms);
             }
+
+            Bytes = ms.ToArray();
         }
 
         private void StretchResize(int Width)
         {
-            using (MemoryStream ms = new MemoryStream())
+            using MemoryStream ms = new();
+            using (MagickImage image = new(Bytes))
             {
-                using (MagickImage image = new MagickImage(this.Bytes))
+                MagickGeometry size = new(Width, Width)
                 {
-                    MagickGeometry size = new MagickGeometry(Width, Width)
-                    {
-                        IgnoreAspectRatio = true
-                    };
+                    IgnoreAspectRatio = true
+                };
 
-                    image.Resize(size);
-                    // Save the result
-                    image.Write(ms);
-                }
-
-                this.Bytes = ms.ToArray();
+                image.Resize(size);
+                // Save the result
+                image.Write(ms);
             }
+
+            Bytes = ms.ToArray();
         }
     }
 }

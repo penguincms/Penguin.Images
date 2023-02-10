@@ -75,7 +75,7 @@ namespace Penguin.Images.Extensions
 
             OverlappingPlane bestPlane = null;
 
-            object swapLock = new object();
+            object swapLock = new();
 
             int rCount = 0;
 
@@ -144,7 +144,7 @@ namespace Penguin.Images.Extensions
                         ?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
                         ?.FirstOrDefault()
                         ?.Trim('*')
-                        ?.ToLower() ?? ".IDFK";
+                        ?.ToLower(System.Globalization.CultureInfo.CurrentCulture) ?? ".IDFK";
             }
             catch (Exception)
             {
@@ -166,13 +166,11 @@ namespace Penguin.Images.Extensions
                 throw new ArgumentNullException(nameof(source));
             }
 
-            format = format?? ImageFormat.Gif;
+            format ??= ImageFormat.Gif;
 
-            using (MemoryStream ms = new MemoryStream())
-            {
-                source.Save(ms, format);
-                return ms.ToArray();
-            }
+            using MemoryStream ms = new();
+            source.Save(ms, format);
+            return ms.ToArray();
         }
 
         /// <summary>
@@ -200,8 +198,8 @@ namespace Penguin.Images.Extensions
             }
 
             int largestDimension = Math.Max(originalImage.Height, originalImage.Width);
-            Size squareSize = new Size(largestDimension, largestDimension);
-            Bitmap squareImage = new Bitmap(squareSize.Width, squareSize.Height);
+            Size squareSize = new(largestDimension, largestDimension);
+            Bitmap squareImage = new(squareSize.Width, squareSize.Height);
             using (Graphics graphics = GetHQGraphics(squareImage))
             {
                 graphics.FillRectangle(Brushes.Black, 0, 0, squareSize.Width, squareSize.Height);
@@ -235,11 +233,11 @@ namespace Penguin.Images.Extensions
                 throw new ArgumentNullException(nameof(original));
             }
 
-            Bitmap resized = new Bitmap(original, size.Width, original.Height * size.Width / original.Width);
+            Bitmap resized = new(original, size.Width, original.Height * size.Width / original.Width);
 
             if (resized.Height > size.Height)
             {
-                Rectangle cropArea = new Rectangle(0, (resized.Height - size.Height) / 2, size.Width, size.Height);
+                Rectangle cropArea = new(0, (resized.Height - size.Height) / 2, size.Width, size.Height);
                 resized = resized.Clone(cropArea, resized.PixelFormat);
             }
 
@@ -267,7 +265,7 @@ namespace Penguin.Images.Extensions
             int newWidth = (int)(img.Width * ratio);
             int newHeight = (int)(img.Height * ratio);
 
-            Bitmap newImage = new Bitmap(newWidth, newHeight);
+            Bitmap newImage = new(newWidth, newHeight);
             newImage.SetResolution(100, 100);
 
             using (Graphics graphics = GetHQGraphics(newImage))
@@ -290,11 +288,9 @@ namespace Penguin.Images.Extensions
                 throw new ArgumentNullException(nameof(img));
             }
 
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                img.Save(memoryStream, ImageFormat.Jpeg);
-                return memoryStream.ToArray();
-            }
+            using MemoryStream memoryStream = new();
+            img.Save(memoryStream, ImageFormat.Jpeg);
+            return memoryStream.ToArray();
         }
 
         /// <summary>
@@ -312,27 +308,23 @@ namespace Penguin.Images.Extensions
             }
 
             CornerRadius *= 2;
-            Bitmap RoundedImage = new Bitmap(StartImage.Width, StartImage.Height);
+            Bitmap RoundedImage = new(StartImage.Width, StartImage.Height);
             RoundedImage.SetResolution(100, 100);
-            using (Graphics g = GetHQGraphics(RoundedImage))
+            using Graphics g = GetHQGraphics(RoundedImage);
+            g.Clear(BackgroundColor);
+
+            using (Brush brush = new TextureBrush(StartImage))
             {
-                g.Clear(BackgroundColor);
+                using GraphicsPath gp = new();
+                gp.AddArc(-1, -1, CornerRadius, CornerRadius, 180, 90);
+                gp.AddArc(0 + RoundedImage.Width - CornerRadius, -1, CornerRadius, CornerRadius, 270, 90);
+                gp.AddArc(0 + RoundedImage.Width - CornerRadius, 0 + RoundedImage.Height - CornerRadius, CornerRadius, CornerRadius, 0, 90);
+                gp.AddArc(-1, 0 + RoundedImage.Height - CornerRadius, CornerRadius, CornerRadius, 90, 90);
 
-                using (Brush brush = new TextureBrush(StartImage))
-                {
-                    using (GraphicsPath gp = new GraphicsPath())
-                    {
-                        gp.AddArc(-1, -1, CornerRadius, CornerRadius, 180, 90);
-                        gp.AddArc(0 + RoundedImage.Width - CornerRadius, -1, CornerRadius, CornerRadius, 270, 90);
-                        gp.AddArc(0 + RoundedImage.Width - CornerRadius, 0 + RoundedImage.Height - CornerRadius, CornerRadius, CornerRadius, 0, 90);
-                        gp.AddArc(-1, 0 + RoundedImage.Height - CornerRadius, CornerRadius, CornerRadius, 90, 90);
-
-                        g.FillPath(brush, gp);
-                    }
-                }
-
-                return RoundedImage;
+                g.FillPath(brush, gp);
             }
+
+            return RoundedImage;
         }
 
         #endregion Methods

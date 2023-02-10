@@ -20,14 +20,14 @@ namespace Penguin.Images
         {
             get
             {
-                for (int x = this.Min.X; x < this.Max.X; x++)
+                for (int x = Min.X; x < Max.X; x++)
                 {
-                    for (int y = this.Min.Y; y < this.Max.Y; y++)
+                    for (int y = Min.Y; y < Max.Y; y++)
                     {
                         yield return new OverlappingPoint
                         {
                             Anchor = new Point(x, y),
-                            Offset = new Point(x - this.OffsetImage.Offset.X, y - this.OffsetImage.Offset.Y)
+                            Offset = new Point(x - OffsetImage.Offset.X, y - OffsetImage.Offset.Y)
                         };
                     }
                 }
@@ -74,26 +74,26 @@ namespace Penguin.Images
                 throw new IndexOutOfRangeException($"Offset Y: {offset.Y} lies outside of offset image height: {offsetImage.Height}. No overlap possible");
             }
 
-            this.AnchorImage = new OffsetImage(anchorImage);
+            AnchorImage = new OffsetImage(anchorImage);
 
-            this.OffsetImage = new OffsetImage(offsetImage)
+            OffsetImage = new OffsetImage(offsetImage)
             {
                 Offset = offset
             };
 
-            this.Min = new Point()
+            Min = new Point()
             {
                 X = Math.Max(0, offset.X),
                 Y = Math.Max(0, offset.Y)
             };
 
-            this.Max = new Point()
+            Max = new Point()
             {
                 X = Math.Min(anchorImage.Width, offset.X + offsetImage.Width) - 1,
                 Y = Math.Min(anchorImage.Height, offset.Y + offsetImage.Height) - 1
             };
 
-            this.Size = new Size(this.Max.X - this.Min.X + 1, this.Max.Y - this.Min.Y + 1);
+            Size = new Size(Max.X - Min.X + 1, Max.Y - Min.Y + 1);
         }
 
         public OverlappingPlane(Image anchorImage, Image offsetImage, Point offset) : this(new BitmapReader(anchorImage), new BitmapReader(offsetImage), offset)
@@ -104,9 +104,9 @@ namespace Penguin.Images
         {
             unchecked
             {
-                if (this.diff.HasValue)
+                if (diff.HasValue)
                 {
-                    return this.diff.Value;
+                    return diff.Value;
                 }
 
                 Color Key = key ?? Color.Black;
@@ -114,21 +114,21 @@ namespace Penguin.Images
                 int compC = 0;
                 long totalC = 0;
 
-                SmallColor[] aPixels = this.AnchorImage.Image.Pixels;
-                int aWidth = this.AnchorImage.Image.Width;
+                SmallColor[] aPixels = AnchorImage.Image.Pixels;
+                int aWidth = AnchorImage.Image.Width;
 
-                SmallColor[] oPixels = this.OffsetImage.Image.Pixels;
-                int oWidth = this.OffsetImage.Image.Width;
+                SmallColor[] oPixels = OffsetImage.Image.Pixels;
+                int oWidth = OffsetImage.Image.Width;
 
                 unsafe
                 {
-                    int xl = this.Max.X - this.Min.X;
+                    int xl = Max.X - Min.X;
 
-                    for (int y = this.Min.Y; y <= this.Max.Y; y++)
+                    for (int y = Min.Y; y <= Max.Y; y++)
                     {
-                        fixed (SmallColor* a = &aPixels[(y * aWidth) + this.Min.X])
+                        fixed (SmallColor* a = &aPixels[(y * aWidth) + Min.X])
                         {
-                            fixed (SmallColor* o = &oPixels[((y - this.OffsetImage.Offset.Y) * oWidth) + (this.Min.X - this.OffsetImage.Offset.X)])
+                            fixed (SmallColor* o = &oPixels[((y - OffsetImage.Offset.Y) * oWidth) + (Min.X - OffsetImage.Offset.X)])
                             {
                                 SmallColor* aVC = a;
                                 SmallColor* oVC = o;
@@ -148,27 +148,27 @@ namespace Penguin.Images
 
                 if (style == ClippingStyle.Diff)
                 {
-                    int diffAmount = (this.AnchorImage.Image.Height * this.AnchorImage.Image.Width) - compC;
+                    int diffAmount = (AnchorImage.Image.Height * AnchorImage.Image.Width) - compC;
 
                     totalC += diffAmount * BYTE_DEPTH;
 
-                    compC = this.AnchorImage.Image.Height * this.AnchorImage.Image.Width;
+                    compC = AnchorImage.Image.Height * AnchorImage.Image.Width;
                 }
 
-                this.diff = totalC / (double)BYTE_DEPTH / compC;
+                diff = totalC / (double)BYTE_DEPTH / compC;
 
-                return this.diff.Value;
+                return diff.Value;
             }
         }
 
         public Bitmap Extract()
         {
-            return this.Extract(Color.Black);
+            return Extract(Color.Black);
         }
 
         public Bitmap Extract(Color? key)
         {
-            Bitmap toReturn = new Bitmap(this.Max.X, this.Max.Y);
+            Bitmap toReturn = new(Max.X, Max.Y);
 
             if (key.HasValue)
             {
@@ -176,9 +176,9 @@ namespace Penguin.Images
                 g.Clear(key.Value);
             }
 
-            foreach (OverlappingPoint op in this.OverlappingPoints)
+            foreach (OverlappingPoint op in OverlappingPoints)
             {
-                SmallColor c = this.OffsetImage.Image.GetPixel(op.Offset);
+                SmallColor c = OffsetImage.Image.GetPixel(op.Offset);
 
                 toReturn.SetPixel(op.Anchor.X, op.Anchor.Y, Color.FromArgb(c.A, c.R, c.G, c.B));
             }

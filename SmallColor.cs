@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Penguin.Images
 {
-    public struct SmallColor
+    public struct SmallColor : IEquatable<SmallColor>
     {
         public byte A { get; set; }
 
@@ -15,10 +15,10 @@ namespace Penguin.Images
 
         public SmallColor(byte r, byte g, byte b, byte a)
         {
-            this.R = r;
-            this.G = g;
-            this.B = b;
-            this.A = a;
+            R = r;
+            G = g;
+            B = b;
+            A = a;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -26,16 +26,41 @@ namespace Penguin.Images
         {
             unchecked
             {
-                return Math.Abs(this.R - other.R) +
-                       Math.Abs(this.G - other.G) +
-                       Math.Abs(this.B - other.B) +
-                       Math.Abs(this.A - other.A);
+                return Math.Abs(R - other.R) +
+                       Math.Abs(G - other.G) +
+                       Math.Abs(B - other.B) +
+                       Math.Abs(A - other.A);
             }
         }
 
         public override string ToString()
         {
-            return $"#{this.R:X2}{this.G:X2}{this.B:X2}{this.A:X2}";
+            return $"#{R:X2}{G:X2}{B:X2}{A:X2}";
+        }
+
+        public override bool Equals(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override int GetHashCode()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool operator ==(SmallColor left, SmallColor right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(SmallColor left, SmallColor right)
+        {
+            return !(left == right);
+        }
+
+        public bool Equals(SmallColor other)
+        {
+            throw new NotImplementedException();
         }
     }
 }
