@@ -167,7 +167,7 @@ namespace Penguin.Images
                 using (IMagickImage imageAlpha = image.Clone())
                 {
                     imageAlpha.Alpha(AlphaOption.Extract);
-                    imageAlpha.Opaque(MagickColors.White, MagickColors.None);
+                    //imageAlpha.Opaque(MagickColors.White, MagickColors.None);
                     mask.Composite(imageAlpha, CompositeOperator.Over);
                 }
 
@@ -191,7 +191,7 @@ namespace Penguin.Images
 
                 copy.Distort(DistortMethod.DePolar, 0);
                 copy.VirtualPixelMethod = VirtualPixelMethod.HorizontalTile;
-                copy.BackgroundColor = MagickColors.None;
+                //copy.BackgroundColor = MagickColors.None;
                 copy.Distort(DistortMethod.Polar, 0);
 
                 image.Compose = CompositeOperator.DstIn;
