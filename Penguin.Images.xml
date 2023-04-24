@@ -422,9 +422,9 @@
             <summary>
             Resizes the image using the given mode
             </summary>
-            <param name="Width">The new width</param>
-            <param name="Height">The new height</param>
-            <param name="Mode">The mode to use</param>
+            <param name="width">The new width</param>
+            <param name="height">The new height</param>
+            <param name="mode">The mode to use</param>
         </member>
         <member name="M:Penguin.Images.PenguinImage.Round(System.Single)">
             <summary>
